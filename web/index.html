@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ACID Ledger — live dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="title">
+      <h1>ACID Ledger</h1>
+      <span class="sub">cryptographically verifiable · journal-first · live</span>
+    </div>
+    <div class="status">
+      <span id="status-pill" class="pill unknown">connecting…</span>
+      <div class="digest">
+        <span class="label">digest</span>
+        <code id="digest-short">—</code>
+        <span class="label">entries</span>
+        <code id="entry-count">—</code>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel" id="accounts-panel">
+      <h2>Accounts</h2>
+      <div id="accounts" class="cards"><p class="empty">loading…</p></div>
+      <button id="seed-btn" class="secondary hidden">Seed demo data</button>
+    </section>
+
+    <section class="panel" id="transfer-panel">
+      <h2>Transfer funds</h2>
+      <form id="transfer-form">
+        <label>From
+          <select id="from"></select>
+        </label>
+        <label>To
+          <select id="to"></select>
+        </label>
+        <label>Amount (USD)
+          <input id="amount" type="number" min="0.01" step="0.01" value="25.00" required>
+        </label>
+        <button type="submit" id="transfer-btn">Send transfer</button>
+      </form>
+      <p class="hint">Each transfer is one atomic journal entry: debit + credit + record + audit event, committed together — or rolled back together.</p>
+      <div class="danger-zone">
+        <h3>Demo: tamper with the ledger</h3>
+        <button id="tamper-btn" class="danger">Mutate ACC-001 balance (bypass journal)</button>
+        <p class="hint">Corrupts state on purpose so you can watch verification catch it. Reset anytime: <code>scripts/10_cleanup.sh &amp;&amp; ./demo.sh</code></p>
+      </div>
+    </section>
+
+    <section class="panel wide">
+      <h2>Journal <span class="sub">(append-only, hash-chained — each entry commits to the previous hash)</span></h2>
+      <div class="table-wrap">
+        <table id="journal-table">
+          <thead>
+            <tr><th>seq</th><th>time</th><th>operations</th><th>hash chain</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel wide">
+      <h2>Transactions</h2>
+      <div class="table-wrap">
+        <table id="tx-table">
+          <thead>
+            <tr><th>id</th><th>from</th><th>to</th><th>amount</th><th>time</th><th>status</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel wide" id="verify-panel">
+      <h2>Integrity verification <span class="sub">(runs on every refresh: chain · journal-replay · Merkle digest)</span></h2>
+      <div id="verify-report"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

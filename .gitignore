@@ -1,0 +1,12 @@
+# generated ledger artifacts
+data/
+build/
+stream/
+exports/
+
+# app internals
+.freebuff/
+
+# python
+__pycache__/
+*.pyc

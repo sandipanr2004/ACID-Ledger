@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# ledgerctl - run the local ledger CLI from anywhere in the repo.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="${ROOT}${PYTHONPATH:+:$PYTHONPATH}"
+exec python3 -m ledger.cli "$@"
